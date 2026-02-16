@@ -1,4 +1,4 @@
-## sysMonDash - Systems Monitor Dashboard
+## sysMonDash - Systems Monitor Dashboard (Fork con soporte Zabbix 7.2)
 
 ---
 
@@ -7,6 +7,30 @@
 Los backend soportados son Nagios, Icinga, Zabbix y Check_MK.
 
 Es posible utilizar Nagios o Icinga mediante el plugin 'mk_livestatus' (recomendado) o el archivo 'status.dat'.
+
+### Requisitos
+
+* **PHP 7.4** o superior
+* Servidor web (Apache, Nginx, etc.)
+* Backend de monitorización: Zabbix (2.2 - 7.2), Nagios, Icinga o Check_MK
+
+### Compatibilidad con Zabbix
+
+| Versión Zabbix | API soportada | Autenticación |
+|----------------|---------------|---------------|
+| 2.2.x | V225 | Usuario/Contraseña |
+| 2.4.x - 6.x | V245 | Usuario/Contraseña |
+| **7.0 - 7.2** | **V720** | **API Token (Bearer) o Usuario/Contraseña** |
+
+### Autenticación por API Token (Zabbix 5.4+)
+
+Zabbix 5.4+ permite crear API tokens desde *Administración > Tokens de API*. Esto es más seguro que usar credenciales de usuario:
+
+1. En Zabbix, ir a **Administración > Tokens de API > Crear token de API**
+2. Asignar un usuario y opcionalmente una fecha de expiración
+3. Copiar el token generado
+4. En sysMonDash, seleccionar versión **7.2** y pegar el token en el campo **API Token de Zabbix**
+5. Los campos usuario/contraseña se pueden dejar vacíos si se usa API token
 
 Las funcionalidades de **sysMonDash** son las siguientes:
 
@@ -21,9 +45,9 @@ Las funcionalidades de **sysMonDash** son las siguientes:
 
 ### Instalación
 
-Es necesario disponer de un servidor web con PHP y el plugin MK livestatus o la API de Zabbix correctamente configurados en el sistema de monitorización.
+Es necesario disponer de un servidor web con **PHP 7.4+** y el plugin MK livestatus o la API de Zabbix correctamente configurados en el sistema de monitorización.
 
-Descargar la aplicación desde https://github.com/nuxsmin/sysMonDash y descomprimirla en la ruta deseada (publicada por el servidor web).
+Descargar la aplicación desde https://github.com/rubencastello1990/sysMonDash y descomprimirla en la ruta deseada (publicada por el servidor web).
 
 Acceder a http://tuservidor.com/sysMonDash/config.php y configurar según tu entorno.
 
@@ -34,6 +58,16 @@ Acceder a http://tuservidor.com/sysMonDash/config.php y configurar según tu ent
 The supported backends are Nagios, Icinga, Zabbix and Check_MK.
 
 It's possible to use Nagios or Icinga through the 'mk_livestatus' plugin (recommended) or the 'status.dat' file.
+
+### Requirements
+
+* **PHP 7.4** or higher
+* Web server (Apache, Nginx, etc.)
+* Monitoring backend: Zabbix (2.2 - 7.2), Nagios, Icinga or Check_MK
+
+### Zabbix API Token Authentication (Zabbix 5.4+)
+
+Instead of username/password, you can use API tokens created in *Administration > API Tokens*. In sysMonDash, select version **7.2** and paste the token in the **Zabbix API Token** field.
 
 The **sysMonDash** key features are:
 
@@ -48,11 +82,11 @@ The **sysMonDash** key features are:
 
 ### Installation
 
-You need to have a running PHP webserver and setup the MK livestatus plugin or Zabbix API in the monitoring server.
+You need to have a running **PHP 7.4+** webserver and setup the MK livestatus plugin or Zabbix API in the monitoring server.
 
-Download the application from https://github.com/nuxsmin/sysMonDash and unpack it in the public webserver root.
+Download the application from https://github.com/rubencastello1990/sysMonDash and unpack it in the public webserver root.
 
-Point to http://yourserver.com/sysMonDash/config.php and set it according to your environment. 
+Point to http://yourserver.com/sysMonDash/config.php and set it according to your environment.
 
 ---
 

@@ -106,7 +106,8 @@ class Html
                         $ConfigBackend = new ConfigBackendCheckMK($config['path']);
                         break;
                     case 'zabbix':
-                        $ConfigBackend = new ConfigBackendZabbix($config['version'], $config['url'], $config['user'], $config['pass'], $config['level']);
+                        $apiToken = isset($config['apitoken']) ? $config['apitoken'] : '';
+                        $ConfigBackend = new ConfigBackendZabbix($config['version'], $config['url'], $config['user'], $config['pass'], $config['level'], $apiToken);
                         break;
                     case 'smd':
                         $ConfigBackend = new ConfigBackendSMD($config['url'], $config['token']);

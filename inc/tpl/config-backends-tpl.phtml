@@ -116,15 +116,21 @@ use SMD\Core\Language;
         <select name="backend[zabbix][version]" required>
             <option value="220">2.2</option>
             <option value="240">2.4</option>
+            <option value="720">7.2</option>
         </select>
     </div>
     <div class="pure-control-group">
+        <label><?php echo Language::t('API Token de Zabbix'); ?></label>
+        <input type="password" name="backend[zabbix][apitoken]"
+               class="pure-input-1-2 backend_zabbix_apitoken" placeholder="<?php echo Language::t('Opcional - alternativa a usuario/clave'); ?>"/>
+    </div>
+    <div class="pure-control-group">
         <label><?php echo Language::t('Usuario API de Zabbix'); ?></label>
-        <input type="text" name="backend[zabbix][user]" class="backend_zabbix_user" required/>
+        <input type="text" name="backend[zabbix][user]" class="backend_zabbix_user"/>
     </div>
     <div class="pure-control-group">
         <label><?php echo Language::t('Clave API de Zabbix'); ?></label>
-        <input type="password" name="backend[zabbix][pass]" class="backend_zabbix_pass" required/>
+        <input type="password" name="backend[zabbix][pass]" class="backend_zabbix_pass"/>
     </div>
     <div class="pure-control-group">
         <label><?php echo Language::t('Nivel mínimo de eventos'); ?></label>

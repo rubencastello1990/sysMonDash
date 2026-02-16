@@ -154,19 +154,27 @@ $n = 0;
                                 data-selected="<?php echo $Backend->getVersion(); ?>" required>
                             <option value="220">2.2</option>
                             <option value="240">2.4</option>
+                            <option value="720">7.2</option>
                         </select>
+                    </div>
+                    <div class="pure-control-group">
+                        <label><?php echo Language::t('API Token de Zabbix'); ?></label>
+                        <input type="password" class="pure-input-1-2 backend_zabbix_apitoken"
+                               name="backend[zabbix][<?php echo $k; ?>][apitoken]"
+                               value="<?php echo method_exists($Backend, 'getApiToken') ? $Backend->getApiToken() : ''; ?>"
+                               placeholder="<?php echo Language::t('Opcional - alternativa a usuario/clave'); ?>"/>
                     </div>
                     <div class="pure-control-group">
                         <label><?php echo Language::t('Usuario API de Zabbix'); ?></label>
                         <input type="text" class="backend_zabbix_user"
                                name="backend[zabbix][<?php echo $k; ?>][user]"
-                               value="<?php echo $Backend->getUser(); ?>" required/>
+                               value="<?php echo $Backend->getUser(); ?>"/>
                     </div>
                     <div class="pure-control-group">
                         <label><?php echo Language::t('Clave API de Zabbix'); ?></label>
                         <input type="password" class="backend_zabbix_pass"
                                name="backend[zabbix][<?php echo $k; ?>][pass]"
-                               value="<?php echo $Backend->getPass(); ?>" required/>
+                               value="<?php echo $Backend->getPass(); ?>"/>
                     </div>
                     <div class="pure-control-group">
                         <label><?php echo Language::t('Nivel mínimo de eventos'); ?></label>

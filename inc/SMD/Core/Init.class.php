@@ -109,8 +109,8 @@ class Init
      */
     public static function checkPhpVersion()
     {
-        if (version_compare(PHP_VERSION, '5.3.0') === -1) {
-            throw new \Exception('Versión de PHP necesaria >= 5.3');
+        if (version_compare(PHP_VERSION, '7.4.0') === -1) {
+            throw new \Exception('Versión de PHP necesaria >= 7.4');
         }
     }
 }

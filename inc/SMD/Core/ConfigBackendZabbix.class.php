@@ -45,6 +45,10 @@ class ConfigBackendZabbix extends ConfigBackend
      * @var string
      */
     protected $pass = '';
+    /**
+     * @var string API token para autenticación Bearer (Zabbix 5.4+)
+     */
+    protected $apiToken = '';
 
     /**
      * ConfigBackendZabbix constructor.
@@ -53,8 +57,9 @@ class ConfigBackendZabbix extends ConfigBackend
      * @param $user
      * @param $pass
      * @param int $level
+     * @param string $apiToken
      */
-    public function __construct($version, $url, $user, $pass, $level = 0)
+    public function __construct($version, $url, $user, $pass, $level = 0, $apiToken = '')
     {
         $this->setType(self::TYPE_ZABBIX);
         $this->setVersion($version);
@@ -62,6 +67,7 @@ class ConfigBackendZabbix extends ConfigBackend
         $this->setUser($user);
         $this->setPass($pass);
         $this->setLevel($level);
+        $this->setApiToken($apiToken);
     }
 
     /**
@@ -125,5 +131,21 @@ class ConfigBackendZabbix extends ConfigBackend
         } else {
             throw new \InvalidArgumentException('Nivel no disponible');
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+
+    /**
+     * @param string $apiToken
+     */
+    public function setApiToken($apiToken)
+    {
+        $this->apiToken = (string)$apiToken;
     }
 }

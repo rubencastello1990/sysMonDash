@@ -39,7 +39,7 @@ use SMD\Util\Util;
  */
 class Zabbix extends Backend implements BackendInterface
 {
-    /** @var \Exts\Zabbix\V225\ZabbixApi|\Exts\Zabbix\V245\ZabbixApi */
+    /** @var \Exts\Zabbix\V225\ZabbixApi|\Exts\Zabbix\V245\ZabbixApi|\Exts\Zabbix\V720\ZabbixApi */
     private $Zabbix = null;
     /**
      * Array con los hosts en mantenimiento
@@ -76,7 +76,18 @@ class Zabbix extends Backend implements BackendInterface
         try {
             $this->Zabbix = ZabbixApiLoader::getAPI($this->backend->getVersion());
             $this->Zabbix->setApiUrl($this->backend->getUrl());
-            $this->Zabbix->userLogin(array('user' => $this->backend->getUser(), 'password' => $this->backend->getPass()));
+
+            $apiToken = $this->backend->getApiToken();
+
+            if (!empty($apiToken)) {
+                // Autenticación por API token (Bearer) - Zabbix 5.4+
+                $this->Zabbix->setBearerAuth($apiToken);
+            } else {
+                // Autenticación por usuario/contraseña
+                // Zabbix 7.x usa 'username', versiones anteriores usan 'user'
+                $userKey = ($this->backend->getVersion() >= 700) ? 'username' : 'user';
+                $this->Zabbix->userLogin(array($userKey => $this->backend->getUser(), 'password' => $this->backend->getPass()));
+            }
         } catch (\Exception $e) {
             error_log(Language::t($e->getMessage()));
             throw $e;
