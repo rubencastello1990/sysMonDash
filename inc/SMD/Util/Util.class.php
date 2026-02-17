@@ -131,8 +131,8 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 2018051402;
-        $version = array(1, 2);
+        $build = 2026021701;
+        $version = array(2, 0);
 
         if ($retBuild) {
             $version[] = $build;
@@ -355,10 +355,10 @@ class Util
     public static function getAppInfo($index)
     {
         $appInfo = array(
-            'appupdates' => 'https://api.github.com/repos/nuxsmin/sysMonDash/releases/latest',
+            'appupdates' => 'https://api.github.com/repos/rubencastello1990/sysMonDash/releases/latest',
             'appVersion' => 'v' . implode('.', self::getVersion()),
-            'appCode' => '<a href="https://github.com/nuxsmin/sysMonDash" target="_blank" title="sysMonDash - GitHub">sysMonDash</a>',
-            'appWiki' => '<a href="https://github.com/nuxsmin/sysMonDash/wiki" target="_blank" title="sysMonDash Wiki - GitHub">sysMonDash Wiki</a>',
+            'appCode' => '<a href="https://github.com/rubencastello1990/sysMonDash" target="_blank" title="sysMonDash - GitHub">sysMonDash</a>',
+            'appWiki' => '<a href="https://github.com/rubencastello1990/sysMonDash/wiki" target="_blank" title="sysMonDash Wiki - GitHub">sysMonDash Wiki</a>',
             'appAuthor' => '<a href="http://cygnux.org" target="_blank" title="' . Language::t('Un proyecto de cygnux.org') . '">cygnux.org</a>',
 
         );

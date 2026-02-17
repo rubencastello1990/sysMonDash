@@ -69,3 +69,10 @@ assets/*
 res/
 
 !.blank
+
+# sysMonDash config (contiene credenciales)
+config.xml
+config.xml.bak
+
+# Claude Code
+**/CLAUDE.md

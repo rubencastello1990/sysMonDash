@@ -1,3 +1,15 @@
+== v2.0.0 (2026-02-17) ==
+
+* [ADD] Soporte Zabbix 7.2 con nuevo cliente API V720
+* [ADD] Autenticación por API Token (Bearer) para Zabbix 5.4+
+* [ADD] Columnas configurables: Proxy y Tags de host en vista principal
+* [ADD] Autenticación de configuración con contraseña y sesión PHP
+* [MOD] PHP mínimo requerido: 7.4
+* [MOD] Update checker apunta al fork de CIBERSTORM
+* [MOD] Versión y enlaces actualizados al fork rubencastello1990/sysMonDash
+
+== v1.2 (2018-05-14) ==
+
 * [ADD] Added new Check_MK backend. Related #18. Thanks to @ikiranreddy for the feedback
 * [ADD] Added new warning message when configuration is changed.
 * [MOD] Improved socket connections.
