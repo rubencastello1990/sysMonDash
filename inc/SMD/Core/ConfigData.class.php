@@ -91,6 +91,12 @@ class ConfigData
     private $configPassword = '';
     /** @var string */
     private $configHash = '';
+    /** @var bool */
+    private $colProxy = false;
+    /** @var bool */
+    private $colTag = false;
+    /** @var string */
+    private $colTagName = '';
 
     /**
      * @return string
@@ -574,5 +580,53 @@ class ConfigData
     public function setPageSubtitle($pageSubtitle)
     {
         $this->pageSubtitle = $pageSubtitle;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isColProxy()
+    {
+        return $this->colProxy;
+    }
+
+    /**
+     * @param boolean $colProxy
+     */
+    public function setColProxy($colProxy)
+    {
+        $this->colProxy = $colProxy;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isColTag()
+    {
+        return $this->colTag;
+    }
+
+    /**
+     * @param boolean $colTag
+     */
+    public function setColTag($colTag)
+    {
+        $this->colTag = $colTag;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColTagName()
+    {
+        return $this->colTagName;
+    }
+
+    /**
+     * @param string $colTagName
+     */
+    public function setColTagName($colTagName)
+    {
+        $this->colTagName = $colTagName;
     }
 }

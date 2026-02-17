@@ -73,10 +73,11 @@ class Config
      */
     public static function saveConfig(StorageInterface $Storage, ConfigData $Config = null)
     {
-        copy(XML_CONFIG_FILE, XML_CONFIG_FILE . '.bak');
+        if (file_exists(XML_CONFIG_FILE) && filesize(XML_CONFIG_FILE) > 0) {
+            copy(XML_CONFIG_FILE, XML_CONFIG_FILE . '.bak');
+        }
 
         $ConfigData = null === $Config ? self::getConfig() : $Config;
-        $Config->setHash();
         $Config->setConfigHash();
 
         $Storage->setItems($ConfigData);

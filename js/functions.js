@@ -233,7 +233,7 @@ var smd = (function ($) {
 
                 if (data.status == 0) {
                     $('#warn-save').hide();
-                    alertify.delay(5000).closeLogOnClick(true).success(data.description)
+                    alertify.delay(5000).closeLogOnClick(true).success(data.description);
                 } else {
                     alertify.error(data.description);
                     // target.addClass('error');
@@ -498,6 +498,7 @@ var smd = (function ($) {
                 $html.find("[name='backend[zabbix][alias]']")[0].name = "backend[zabbix][" + len + "][alias]";
                 $html.find("[name='backend[zabbix][url]']")[0].name = "backend[zabbix][" + len + "][url]";
                 $html.find("[name='backend[zabbix][version]']")[0].name = "backend[zabbix][" + len + "][version]";
+                $html.find("[name='backend[zabbix][apitoken]']")[0].name = "backend[zabbix][" + len + "][apitoken]";
                 $html.find("[name='backend[zabbix][user]']")[0].name = "backend[zabbix][" + len + "][user]";
                 $html.find("[name='backend[zabbix][pass]']")[0].name = "backend[zabbix][" + len + "][pass]";
                 $html.find("[name='backend[zabbix][level]']")[0].name = "backend[zabbix][" + len + "][level]";
@@ -533,17 +534,18 @@ var smd = (function ($) {
             zabbix: function ($obj) {
                 var parent = $obj.parent().parent(".backendConfig");
 
-                var version = parent.find(".backend_zabbix_version").val();
+                var version = parent.find("select[name*='[version]']").val();
                 var url = parent.find(".backend_zabbix_url").val();
+                var apitoken = parent.find(".backend_zabbix_apitoken").val();
                 var user = parent.find(".backend_zabbix_user").val();
                 var pass = parent.find(".backend_zabbix_pass").val();
 
-                if (version === '' || url === '') {
+                if (url === '') {
                     alertify.alert(Config.getLang(4));
                     return;
                 }
 
-                var checkData = {url: url, version: version, user: user, pass: pass};
+                var checkData = {url: url, version: version, user: user, pass: pass, apitoken: apitoken};
                 var ajaxData = {action: "zabbixBackend", data: JSON.stringify(checkData)};
 
                 checkConfig(ajaxData);

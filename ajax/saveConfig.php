@@ -38,12 +38,11 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php
 Init::start(false);
 
 $hash = Request::analyze('hash');
+$configPass = (string)Config::getConfig()->getConfigPassword();
+$accessOk = empty($configPass) || ($hash === $configPass);
 
-$hashOk = ($hash === Session::getConfig()->getHash() || Session::getConfig()->getHash() === '');
-$passOK = ($hash === (string)Session::getConfig()->getConfigPassword());
-
-if (!$hashOk && !$passOK) {
-    Response::printJSON('Hash de configuración incorrecto');
+if (!$accessOk) {
+    Response::printJSON('Contraseña de configuración incorrecta');
 }
 
 $siteLanguage = Request::analyze('site_language');
@@ -58,6 +57,9 @@ $showColHost = Request::analyze('col_host', false, false, true);
 $showColService = Request::analyze('col_service', false, false, true);
 $showColInfo = Request::analyze('col_info', false, false, true);
 $showColBackend = Request::analyze('col_backend', false, false, true);
+$showColProxy = Request::analyze('col_proxy', false, false, true);
+$showColTag = Request::analyze('col_tag', false, false, true);
+$colTagName = Request::analyze('col_tag_name');
 $showScheduled = Request::analyze('show_scheduled', false, false, true);
 $regexHostShow = Request::analyze('regex_host_show');
 $regexServicesNoShow = Request::analyze('regex_services_no_show');
@@ -87,6 +89,9 @@ $ConfigData->setColHost($showColHost);
 $ConfigData->setColService($showColService);
 $ConfigData->setColStatusInfo($showColInfo);
 $ConfigData->setColBackend($showColBackend);
+$ConfigData->setColProxy($showColProxy);
+$ConfigData->setColTag($showColTag);
+$ConfigData->setColTagName($colTagName);
 $ConfigData->setShowScheduled($showScheduled);
 $ConfigData->setRegexHostShow($regexHostShow);
 $ConfigData->setRegexServiceNoShow($regexServicesNoShow);
@@ -98,7 +103,7 @@ $ConfigData->setMonitorServerUrl($specialMonitorServerUrl);
 $ConfigData->setAPIToken($specialAPIToken);
 
 if (!empty($specialConfigPass)
-    && $specialConfigPass !== (string)Session::getConfig()->getConfigPassword()
+    && $specialConfigPass !== (string)Config::getConfig()->getConfigPassword()
 ) {
     $ConfigData->setConfigPassword(sha1($specialConfigPass));
 } else {
@@ -107,7 +112,7 @@ if (!empty($specialConfigPass)
 
 try {
     Config::saveConfig(new XmlHandler(XML_CONFIG_FILE), $ConfigData);
-    Response::printJSON('Configuración guardada', 0);
+    Response::printJSON('Configuración guardada correctamente', 0);
 } catch (Exception $e) {
     Response::printJSON('Error al guardar la configuración');
 }

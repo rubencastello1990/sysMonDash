@@ -450,6 +450,14 @@ class sysMonDash
             }
         }
 
+        if ($this->Config->isColProxy()) {
+            $line .= '<td class="center">' . htmlspecialchars($item->getHostProxy()) . '</td>' . PHP_EOL;
+        }
+
+        if ($this->Config->isColTag() && !empty($this->Config->getColTagName())) {
+            $line .= '<td class="center">' . htmlspecialchars($item->getHostTagValue($this->Config->getColTagName())) . '</td>' . PHP_EOL;
+        }
+
         if ($this->Config->isColStatusInfo()) {
             if ($item->getFilterStatus() === '' || $newItem) {
                 $line .= '<td class="statusinfo">' . $item->getPluginOutput() . '</td>' . PHP_EOL;

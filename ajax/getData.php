@@ -64,6 +64,12 @@ if ($type !== 1) {
         <?php if (Config::getConfig()->isColHost()): ?>
             <th width="25%"><?php echo Language::t('Host'); ?></th>
         <?php endif; ?>
+        <?php if (Config::getConfig()->isColProxy()): ?>
+            <th><?php echo Language::t('Proxy'); ?></th>
+        <?php endif; ?>
+        <?php if (Config::getConfig()->isColTag() && !empty(Config::getConfig()->getColTagName())): ?>
+            <th><?php echo htmlspecialchars(Config::getConfig()->getColTagName()); ?></th>
+        <?php endif; ?>
         <?php if (Config::getConfig()->isColStatusInfo()): ?>
             <th width="30%"><?php echo Language::t('Información de Estado'); ?></th>
         <?php endif; ?>

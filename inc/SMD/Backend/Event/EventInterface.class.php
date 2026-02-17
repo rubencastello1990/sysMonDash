@@ -348,4 +348,30 @@ interface EventInterface
      * @param int $backendLevel
      */
     public function setBackendLevel($backendLevel);
+
+    /**
+     * @return string
+     */
+    public function getHostProxy();
+
+    /**
+     * @param string $hostProxy
+     */
+    public function setHostProxy($hostProxy);
+
+    /**
+     * @return array
+     */
+    public function getHostTags();
+
+    /**
+     * @param array $hostTags
+     */
+    public function setHostTags($hostTags);
+
+    /**
+     * @param string $tagName
+     * @return string
+     */
+    public function getHostTagValue($tagName);
 }

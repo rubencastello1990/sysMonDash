@@ -32,7 +32,7 @@ define('APP_ROOT', '..');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Init::start();
+Init::start(false);
 
 $action = Request::analyze('action');
 $data = Request::analyze('data');
@@ -57,8 +57,17 @@ try {
             $ZabbixLoader = new ZabbixApiLoader();
             $Zabbix = $ZabbixLoader->getAPI($data->version);
             $Zabbix->setApiUrl($data->url);
-            $Zabbix->userLogin(array('user' => $data->user, 'password' => $data->pass));
+
+            // Get version first (public method, must be called without auth)
             $version = $Zabbix->apiinfoVersion();
+
+            // Then verify auth works
+            if (!empty($data->apitoken)) {
+                $Zabbix->setBearerAuth($data->apitoken);
+            } else {
+                $Zabbix->userLogin(array('username' => $data->user, 'password' => $data->pass));
+            }
+            $Zabbix->userGet(array('output' => array('userid'), 'limit' => 1));
 
             Response::printJSON('V ' . $version, 0);
             break;

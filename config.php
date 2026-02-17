@@ -35,9 +35,22 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php
 
 Init::start();
 
-$hash = Request::analyze('h');
-$hashOk = ($hash === Session::getConfig()->getHash() || Session::getConfig()->getHash() === '');
-$passOK = (sha1($hash) === (string)Session::getConfig()->getConfigPassword());
+$configPass = (string)Config::getConfig()->getConfigPassword();
+$hasPassword = !empty($configPass);
+
+if (!$hasPassword) {
+    $accessOk = true;
+} elseif (isset($_SESSION['smd_config_auth']) && $_SESSION['smd_config_auth'] === true) {
+    $accessOk = true;
+} else {
+    $inputPass = Request::analyze('h');
+    if (!empty($inputPass) && sha1($inputPass) === $configPass) {
+        $_SESSION['smd_config_auth'] = true;
+        $accessOk = true;
+    } else {
+        $accessOk = false;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -64,7 +77,7 @@ $passOK = (sha1($hash) === (string)Session::getConfig()->getConfigPassword());
     </div>
 </div>
 <div id="wrap">
-    <?php if ($hashOk || $passOK): ?>
+    <?php if ($accessOk): ?>
         <?php if (Util::checkConfigFile()): ?>
             <form method="post" id="frmConfig" name="frmConfig" class="pure-form pure-form-aligned">
                 <fieldset>
@@ -140,6 +153,22 @@ $passOK = (sha1($hash) === (string)Session::getConfig()->getConfigPassword());
                                    name="col_backend" <?php echo Config::getConfig()->isColBackend() ? 'checked' : ''; ?>/>
                         </div>
                         <div class="pure-control-group">
+                            <label for="col_proxy"><?php echo Language::t('Mostrar proxy del host'); ?></label>
+                            <input type="checkbox" id="col_proxy"
+                                   name="col_proxy" <?php echo Config::getConfig()->isColProxy() ? 'checked' : ''; ?>/>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="col_tag"><?php echo Language::t('Mostrar tag del host'); ?></label>
+                            <input type="checkbox" id="col_tag"
+                                   name="col_tag" <?php echo Config::getConfig()->isColTag() ? 'checked' : ''; ?>/>
+                        </div>
+                        <div class="pure-control-group">
+                            <label for="col_tag_name"><?php echo Language::t('Nombre del tag a mostrar'); ?></label>
+                            <input type="text" id="col_tag_name" name="col_tag_name" class="pure-input-1-2"
+                                   value="<?php echo htmlspecialchars(Config::getConfig()->getColTagName()); ?>"
+                                   placeholder="cliente"/>
+                        </div>
+                        <div class="pure-control-group">
                             <label
                                     for="show_scheduled"><?php echo Language::t('Mostrar eventos programados'); ?></label>
                             <input type="checkbox" id="show_scheduled"
@@ -209,11 +238,20 @@ $passOK = (sha1($hash) === (string)Session::getConfig()->getConfigPassword());
                                 <i class="fa fa-refresh"></i>
                             </button>
                         </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>
+                        <i class="fa fa-caret-up container-state" data-container="security-config-container"></i>
+                        <?php echo Language::t('Seguridad'); ?>
+                    </legend>
+                    <div id="security-config-container" class="flex-wrapper" aria-expanded="true">
                         <div class="pure-control-group">
                             <label
                                     for="special_config_pass"><?php echo Language::t('Clave de configuración'); ?></label>
                             <input type="password" id="special_config_pass" name="special_config_pass"
-                                   value="<?php echo Session::getConfig()->getConfigPassword(); ?>"
+                                   value="<?php echo Config::getConfig()->getConfigPassword(); ?>"
                                    placeholder=""/>
                             <button class="btn-gen-pass pure-button" type="button"
                                     title="<?php echo Language::t('Generar Clave'); ?>"
@@ -239,7 +277,7 @@ $passOK = (sha1($hash) === (string)Session::getConfig()->getConfigPassword());
                 </div>
 
                 <input type="hidden" name="hash"
-                       value="<?php echo $passOK ? Session::getConfig()->getConfigPassword() : $hash; ?>"/>
+                       value="<?php echo $configPass; ?>"/>
             </form>
 
             <?php include TPL_PATH . DIRECTORY_SEPARATOR . 'config-backends-tpl.phtml'; ?>
@@ -258,7 +296,7 @@ $passOK = (sha1($hash) === (string)Session::getConfig()->getConfigPassword());
         <form method="post" action="config.php" id="frmHash" name="frmHash" class="pure-form">
             <fieldset>
                 <legend><?php echo Language::t('Configuración'); ?></legend>
-                <label for="hash"><?php echo Language::t('Hash de configuración'); ?></label>
+                <label for="hash"><?php echo Language::t('Contraseña de configuración'); ?></label>
                 <input type="password" id="hash" name="h" class="pure-input-1-2" required/>
                 <button type="submit"
                         class="pure-button pure-button-primary"><?php echo Language::t('Comprobar'); ?></button>

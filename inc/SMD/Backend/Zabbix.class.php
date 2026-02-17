@@ -121,6 +121,15 @@ class Zabbix extends Backend implements BackendInterface
     {
         $this->getScheduledDowntimes();
 
+        $configData = Config::getConfig();
+
+        $selectHosts = array('hostid', 'name', 'maintenance_status');
+
+        // Añadir proxyid si la columna proxy está activa
+        if ($configData->isColProxy()) {
+            $selectHosts[] = ($this->backend->getVersion() >= 700) ? 'proxyid' : 'proxy_hostid';
+        }
+
         $params = array(
             'groupids' => null,
             'hostids' => null,
@@ -132,15 +141,71 @@ class Zabbix extends Backend implements BackendInterface
             'expandDescription' => true,
             'expandExpression' => true,
             'output' => array('triggerid', 'state', 'status', 'error', 'url', 'expression', 'description', 'priority', 'lastchange', 'value'),
-            'selectHosts' => array('hostid', 'name', 'maintenance_status'),
+            'selectHosts' => $selectHosts,
             'selectLastEvent' => array('eventid', 'acknowledged', 'objectid', 'clock', 'ns', 'value'),
             'selectItems' => array('name'),
             'sortfield' => array('lastchange'),
             'sortorder' => array('DESC'),
-            'limit' => Config::getConfig()->getMaxDisplayItems()
+            'limit' => $configData->getMaxDisplayItems()
         );
 
         $triggers = $this->Zabbix->triggerGet($params);
+
+        // Construir mapas de proxy y tags si las columnas están activas
+        $proxyMap = array();
+        $tagsMap = array();
+
+        if ($configData->isColProxy() || ($configData->isColTag() && !empty($configData->getColTagName()))) {
+            $hostIds = array();
+            $proxyIds = array();
+            $proxyIdField = ($this->backend->getVersion() >= 700) ? 'proxyid' : 'proxy_hostid';
+
+            foreach ($triggers as $trigger) {
+                foreach ($trigger->hosts as $host) {
+                    $hostIds[$host->hostid] = true;
+                    if ($configData->isColProxy() && isset($host->$proxyIdField) && !empty($host->$proxyIdField)) {
+                        $proxyIds[$host->$proxyIdField] = true;
+                    }
+                }
+            }
+
+            // Obtener tags de host
+            if ($configData->isColTag() && !empty($configData->getColTagName()) && count($hostIds) > 0) {
+                try {
+                    $hosts = $this->Zabbix->hostGet(array(
+                        'hostids' => array_keys($hostIds),
+                        'output' => array('hostid'),
+                        'selectTags' => 'extend'
+                    ));
+                    foreach ($hosts as $h) {
+                        if (isset($h->tags)) {
+                            $tagsMap[$h->hostid] = array();
+                            foreach ($h->tags as $tag) {
+                                $tagsMap[$h->hostid][] = array('tag' => $tag->tag, 'value' => $tag->value);
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    error_log('sysMonDash: Error fetching host tags: ' . $e->getMessage());
+                }
+            }
+
+            // Obtener nombres de proxy
+            if ($configData->isColProxy() && count($proxyIds) > 0) {
+                try {
+                    $proxies = $this->Zabbix->proxyGet(array(
+                        'proxyids' => array_keys($proxyIds),
+                        'output' => array('proxyid', 'name')
+                    ));
+                    foreach ($proxies as $proxy) {
+                        $proxyMap[$proxy->proxyid] = $proxy->name;
+                    }
+                } catch (\Exception $e) {
+                    error_log('sysMonDash: Error fetching proxies: ' . $e->getMessage());
+                }
+            }
+        }
+
         $events = array();
 
         foreach ($triggers as $event) {
@@ -163,6 +228,19 @@ class Zabbix extends Backend implements BackendInterface
                 $Event->setBackendAlias($this->backend->getAlias());
                 $Event->setBackendUrl($this->backend->getUrl());
                 $Event->setBackendLevel($this->backend->getLevel());
+
+                // Asignar proxy
+                if ($configData->isColProxy()) {
+                    $proxyIdField = ($this->backend->getVersion() >= 700) ? 'proxyid' : 'proxy_hostid';
+                    if (isset($host->$proxyIdField) && isset($proxyMap[$host->$proxyIdField])) {
+                        $Event->setHostProxy($proxyMap[$host->$proxyIdField]);
+                    }
+                }
+
+                // Asignar tags
+                if (isset($tagsMap[$host->hostid])) {
+                    $Event->setHostTags($tagsMap[$host->hostid]);
+                }
 
                 $events[] = $Event;
             }
@@ -344,23 +422,85 @@ class Zabbix extends Backend implements BackendInterface
     {
         $this->getScheduledDowntimes();
 
+        $configData = Config::getConfig();
+
+        $selectHosts = array('hostid', 'name', 'maintenance_status', 'errors_from');
+
+        if ($configData->isColProxy()) {
+            $selectHosts[] = ($this->backend->getVersion() >= 700) ? 'proxyid' : 'proxy_hostid';
+        }
+
         $params = array(
             'groupids' => null,
             'hostids' => null,
             'monitored' => true,
             //'maintenance'   => false,
-            'filter' => array('value' => 0, 'lastChangeSince' => time() - (Config::getConfig()->getNewItemTime() / 2)),
+            'filter' => array('value' => 0, 'lastChangeSince' => time() - ($configData->getNewItemTime() / 2)),
             'skipDependent' => true,
             'expandDescription' => true,
             'output' => array('triggerid', 'state', 'status', 'error', 'url', 'expression', 'description', 'priority', 'lastchange', 'value'),
-            'selectHosts' => array('hostid', 'name', 'maintenance_status', 'errors_from'),
+            'selectHosts' => $selectHosts,
             'selectLastEvent' => array('eventid', 'acknowledged', 'objectid', 'clock', 'ns', 'value'),
             'sortfield' => array('lastchange'),
             'sortorder' => array('DESC'),
-            'limit' => Config::getConfig()->getMaxDisplayItems()
+            'limit' => $configData->getMaxDisplayItems()
         );
 
         $triggers = $this->Zabbix->triggerGet($params);
+
+        // Construir mapas de proxy y tags si las columnas están activas
+        $proxyMap = array();
+        $tagsMap = array();
+
+        if ($configData->isColProxy() || ($configData->isColTag() && !empty($configData->getColTagName()))) {
+            $hostIds = array();
+            $proxyIds = array();
+            $proxyIdField = ($this->backend->getVersion() >= 700) ? 'proxyid' : 'proxy_hostid';
+
+            foreach ($triggers as $trigger) {
+                foreach ($trigger->hosts as $host) {
+                    $hostIds[$host->hostid] = true;
+                    if ($configData->isColProxy() && isset($host->$proxyIdField) && !empty($host->$proxyIdField)) {
+                        $proxyIds[$host->$proxyIdField] = true;
+                    }
+                }
+            }
+
+            if ($configData->isColTag() && !empty($configData->getColTagName()) && count($hostIds) > 0) {
+                try {
+                    $hosts = $this->Zabbix->hostGet(array(
+                        'hostids' => array_keys($hostIds),
+                        'output' => array('hostid'),
+                        'selectTags' => 'extend'
+                    ));
+                    foreach ($hosts as $h) {
+                        if (isset($h->tags)) {
+                            $tagsMap[$h->hostid] = array();
+                            foreach ($h->tags as $tag) {
+                                $tagsMap[$h->hostid][] = array('tag' => $tag->tag, 'value' => $tag->value);
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    error_log('sysMonDash: Error fetching host tags: ' . $e->getMessage());
+                }
+            }
+
+            if ($configData->isColProxy() && count($proxyIds) > 0) {
+                try {
+                    $proxies = $this->Zabbix->proxyGet(array(
+                        'proxyids' => array_keys($proxyIds),
+                        'output' => array('proxyid', 'name')
+                    ));
+                    foreach ($proxies as $proxy) {
+                        $proxyMap[$proxy->proxyid] = $proxy->name;
+                    }
+                } catch (\Exception $e) {
+                    error_log('sysMonDash: Error fetching proxies: ' . $e->getMessage());
+                }
+            }
+        }
+
         $events = array();
 
         foreach ($triggers as $event) {
@@ -384,6 +524,17 @@ class Zabbix extends Backend implements BackendInterface
                 $Event->setBackendAlias($this->backend->getAlias());
                 $Event->setBackendUrl($this->backend->getUrl());
                 $Event->setBackendLevel($this->backend->getLevel());
+
+                if ($configData->isColProxy()) {
+                    $proxyIdField = ($this->backend->getVersion() >= 700) ? 'proxyid' : 'proxy_hostid';
+                    if (isset($host->$proxyIdField) && isset($proxyMap[$host->$proxyIdField])) {
+                        $Event->setHostProxy($proxyMap[$host->$proxyIdField]);
+                    }
+                }
+
+                if (isset($tagsMap[$host->hostid])) {
+                    $Event->setHostTags($tagsMap[$host->hostid]);
+                }
 
                 $events[] = $Event;
             }

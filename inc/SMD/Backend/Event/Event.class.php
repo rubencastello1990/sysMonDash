@@ -163,6 +163,14 @@ abstract class Event implements EventInterface
      * @var string
      */
     public $backendImage;
+    /**
+     * @var string
+     */
+    public $hostProxy = '';
+    /**
+     * @var array
+     */
+    public $hostTags = array();
 
     /**
      * Event constructor.
@@ -683,5 +691,52 @@ abstract class Event implements EventInterface
     public function setBackendImage($backendImage)
     {
         $this->backendImage = $backendImage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHostProxy()
+    {
+        return $this->hostProxy;
+    }
+
+    /**
+     * @param string $hostProxy
+     */
+    public function setHostProxy($hostProxy)
+    {
+        $this->hostProxy = $hostProxy;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHostTags()
+    {
+        return $this->hostTags;
+    }
+
+    /**
+     * @param array $hostTags
+     */
+    public function setHostTags($hostTags)
+    {
+        $this->hostTags = $hostTags;
+    }
+
+    /**
+     * @param string $tagName
+     * @return string
+     */
+    public function getHostTagValue($tagName)
+    {
+        foreach ($this->hostTags as $tag) {
+            if (isset($tag['tag']) && $tag['tag'] === $tagName) {
+                return isset($tag['value']) ? $tag['value'] : '';
+            }
+        }
+
+        return '';
     }
 }

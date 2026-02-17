@@ -303,6 +303,26 @@ abstract class ZabbixApiAbstract
     }
 
     /**
+     * @param array $params
+     * @return mixed
+     * @throws Exception
+     */
+    public function hostGet($params = array())
+    {
+        return $this->request('host.get', $params);
+    }
+
+    /**
+     * @param array $params
+     * @return mixed
+     * @throws Exception
+     */
+    public function proxyGet($params = array())
+    {
+        return $this->request('proxy.get', $params);
+    }
+
+    /**
      * Get active problems (modern alternative to trigger.get for Zabbix 5.x+).
      *
      * @param array $params
