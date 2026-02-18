@@ -47,9 +47,13 @@ Session::setCssHash(Util::getCssHash());
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>sysMonDash :: <?php echo Config::getConfig()->getPageTitle(); ?></title>
     <meta name="author" content="Rubén Domínguez">
     <link rel="icon" type="image/png" href="imgs/logo_small.png">
+    <script>
+        (function(){var t=localStorage.getItem('smd-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+    </script>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/reset.min.css">
     <link rel="stylesheet" type="text/css" href="css/pure.min.css">
@@ -58,12 +62,16 @@ Session::setCssHash(Util::getCssHash());
 </head>
 <body>
 <div id="logo">
-    <img src="imgs/logo.png"/>
+    <img id="logo-dark" src="imgs/logo-ciberstom-15-trans_cropped.png" alt="Ciberstorm"/>
+    <img id="logo-light" src="imgs/logo-ciberstom-16-trans_cropped.png" alt="Ciberstorm"/>
     <div id="hora"><h1></h1></div>
     <div id="titulo">
         <h1><?php echo Config::getConfig()->getPageTitle(); ?></h1>
         <h2><?php echo Config::getConfig()->getPageSubtitle(); ?></h2>
     </div>
+    <button id="theme-toggle" aria-label="Toggle theme">
+        <i class="fa fa-moon-o"></i>
+    </button>
 </div>
 
 <div id="monitor-data"></div>
@@ -84,6 +92,21 @@ Session::setCssHash(Util::getCssHash());
 <?php endif; ?>
 
 <script type="text/javascript" src="js/functions.min.js"></script>
+<script type="text/javascript">
+    (function(){
+        var btn=document.getElementById('theme-toggle');
+        var icon=btn.querySelector('i');
+        var t=document.documentElement.getAttribute('data-theme');
+        icon.className=t==='dark'?'fa fa-moon-o':'fa fa-sun-o';
+        btn.addEventListener('click',function(){
+            var current=document.documentElement.getAttribute('data-theme');
+            var next=current==='dark'?'light':'dark';
+            document.documentElement.setAttribute('data-theme',next);
+            localStorage.setItem('smd-theme',next);
+            icon.className=next==='dark'?'fa fa-moon-o':'fa fa-sun-o';
+        });
+    }());
+</script>
 <script type="text/javascript">
     (function () {
         smd.Config.setRemoteServer('<?php echo Config::getConfig()->getRemoteServer(); ?>');

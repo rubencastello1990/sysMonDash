@@ -24,11 +24,13 @@
 #wrap {
     width: 80%;
     margin: 1em auto;
+    color: var(--text);
 }
 
 #wrap form label {
     white-space: nowrap;
     width: 18em;
+    color: var(--text);
 }
 
 #wrap #btnBackends {
@@ -39,7 +41,7 @@
 #wrap .backendConfig {
     padding: .5em 0;
     margin: .5em 0;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid var(--border);
 }
 
 #wrap #result {
@@ -48,30 +50,40 @@
     padding: .5em;
     text-align: center;
     border-radius: 5px;
-    color: #333;
+    color: var(--text);
 }
 
 #wrap #result.error {
-    background-color: #ffcdd2;
+    background-color: var(--error-bg);
+    color: var(--error-color);
+    border: 1px solid var(--error-border);
 }
 
 #wrap #result.ok {
-    background-color: #c8e6c9;
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #4ade80;
+}
+
+[data-theme="dark"] #wrap #result.ok {
+    background-color: #052e16;
+    color: #4ade80;
+    border: 1px solid #15803d;
 }
 
 #wrap #help {
     margin-top: 1em;
     text-align: center;
-    color: #555;
+    color: var(--text-muted);
 }
 
 #wrap #help a {
-    color: #555;
+    color: var(--text-muted);
     vertical-align: baseline;
 }
 
 #warn-save {
-    background: rgba(255, 255, 255, .8);
+    background: rgba(0, 0, 0, .6);
     padding: 1em;
     position: fixed;
     top: 7em;
@@ -79,9 +91,13 @@
     display: none;
 }
 
+[data-theme="light"] #warn-save {
+    background: rgba(255, 255, 255, .85);
+}
+
 #warn-save i {
     font-size: 2em;
-    color: #ffa726;
+    color: #d97706;
     cursor: pointer;
 }
 
@@ -94,29 +110,57 @@
 .button-warning,
 .button-secondary {
     color: white;
-    border-radius: 4px;
+    border-radius: 6px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .button-success {
-    background: #66bb6a;
+    background: #059669;
 }
 
 .button-error {
-    background: #ef5350;
+    background: #dc2626;
 }
 
 .button-warning {
-    background: #ffa726;
+    background: #d97706;
 }
 
 .button-secondary {
-    background: #42a5f5;
+    background: #2563eb;
 }
 
 .pure-form legend {
-    padding: .2em;
-    background-color: #fff;
+    padding: .2em .5em;
+    background-color: var(--surface);
+    color: var(--text);
+    border-radius: 4px;
+}
+
+.pure-form fieldset {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1em;
+    background: var(--surface);
+}
+
+.pure-form input[type="text"],
+.pure-form input[type="number"],
+.pure-form input[type="password"],
+.pure-form select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.pure-form input[type="text"]:focus,
+.pure-form input[type="number"]:focus,
+.pure-form input[type="password"]:focus,
+.pure-form select:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
 }
 
 .container-state, .fa-eye {
