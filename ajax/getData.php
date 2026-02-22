@@ -57,29 +57,31 @@ if ($type !== 1) {
 ?>
     <table id="tblBoard" width="90%" border="0" class="boldtable" align="center">
         <thead class="head">
-        <th width="3%"><?php echo Language::t('Nivel'); ?></th>
-        <?php if (Config::getConfig()->isColLastcheck()): ?>
-            <th width="13%"><?php echo Language::t('Desde'); ?></th>
-        <?php endif; ?>
-        <?php if (Config::getConfig()->isColHost()): ?>
-            <th width="25%"><?php echo Language::t('Host'); ?></th>
-        <?php endif; ?>
-        <?php if (Config::getConfig()->isColProxy()): ?>
-            <th><?php echo Language::t('Proxy'); ?></th>
-        <?php endif; ?>
-        <?php if (Config::getConfig()->isColTag() && !empty(Config::getConfig()->getColTagName())): ?>
-            <th><?php echo htmlspecialchars(Config::getConfig()->getColTagName()); ?></th>
-        <?php endif; ?>
-        <?php if (Config::getConfig()->isColStatusInfo()): ?>
-            <th width="30%"><?php echo Language::t('Información de Estado'); ?></th>
-        <?php endif; ?>
-        <?php if (Config::getConfig()->isColService()): ?>
-            <th width="20%"><?php echo Language::t('Servicio'); ?></th>
-        <?php endif; ?>
-        <?php if (Config::getConfig()->isColBackend()): ?>
-            <th width="20%"><?php echo Language::t('Backend'); ?></th>
-            <th>&nbsp;</th>
-        <?php endif; ?>
+            <tr>
+                <th width="3%"><?php echo Language::t('Nivel'); ?></th>
+                <?php if (Config::getConfig()->isColLastcheck()): ?>
+                    <th width="13%"><?php echo Language::t('Desde'); ?></th>
+                <?php endif; ?>
+                <?php if (Config::getConfig()->isColHost()): ?>
+                    <th width="25%"><?php echo Language::t('Host'); ?></th>
+                <?php endif; ?>
+                <?php if (Config::getConfig()->isColProxy()): ?>
+                    <th><?php echo Language::t('Proxy'); ?></th>
+                <?php endif; ?>
+                <?php if (Config::getConfig()->isColTag() && !empty(Config::getConfig()->getColTagName())): ?>
+                    <th><?php echo htmlspecialchars(Config::getConfig()->getColTagName()); ?></th>
+                <?php endif; ?>
+                <?php if (Config::getConfig()->isColStatusInfo()): ?>
+                    <th width="30%"><?php echo Language::t('Información de Estado'); ?></th>
+                <?php endif; ?>
+                <?php if (Config::getConfig()->isColService()): ?>
+                    <th width="20%"><?php echo Language::t('Servicio'); ?></th>
+                <?php endif; ?>
+                <?php if (Config::getConfig()->isColBackend()): ?>
+                    <th width="20%"><?php echo Language::t('Backend'); ?></th>
+                    <th>&nbsp;</th>
+                <?php endif; ?>
+            </tr>
         </thead>
 
         <?php if ($SMD->getDisplayedItems() === 0 && count($SMD->getErrors()) === 0): ?>

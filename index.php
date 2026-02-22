@@ -92,6 +92,7 @@ Session::setCssHash(Util::getCssHash());
 <?php endif; ?>
 
 <script type="text/javascript" src="js/functions.min.js"></script>
+<script type="text/javascript" src="js/col-resize.js"></script>
 <script type="text/javascript">
     (function(){
         var btn=document.getElementById('theme-toggle');

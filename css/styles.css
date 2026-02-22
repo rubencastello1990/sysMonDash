@@ -381,7 +381,7 @@ footer #project a {
    Header (#logo)
    ============================================================ */
 #logo {
-    padding: 1em;
+    padding: 1em 1em 1.4em;
     text-align: left;
     background-color: var(--header-bg);
     border-bottom: 2px solid var(--accent);
@@ -589,4 +589,51 @@ footer #updates i {
 
 .backend-image img {
     width: 48px;
+}
+
+/* ============================================================
+   Column resizer
+   ============================================================ */
+#tblBoard thead th { position: relative; }
+
+.col-resizer {
+    position: absolute;
+    top: 0; right: 0;
+    width: 8px; height: 100%;
+    cursor: col-resize;
+    background: transparent;
+    user-select: none;
+    z-index: 10;
+    border-right: 2px solid rgba(255,255,255,0.2);
+    transition: border-right-color 0.2s;
+}
+.col-resizer:hover,
+.col-resizer.resizing {
+    border-right-color: var(--accent);
+}
+
+/* Reset column widths button */
+.col-reset-btn {
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11;
+    transition: background 0.2s, color 0.2s;
+}
+.col-reset-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--accent);
 }
